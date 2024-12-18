@@ -5,11 +5,11 @@ A comprehensive financial tracking application built with React Native and Expo.
 ## ✨ Key Features
 
 - 💰 **Complete Transaction Management**
-  - Add, edit, and delete transactions
+  - Add, edit, and delete transactions with swipe actions
+  - Swipe left to reveal edit and delete options
   - Categorize with custom categories and icons
   - Add detailed notes to transactions
   - Support for multiple currencies
-  - Quick actions for frequent operations
 
 - 📊 **Advanced Analytics**
   - Visual breakdown of income vs expenses
@@ -38,6 +38,7 @@ A comprehensive financial tracking application built with React Native and Expo.
 - **State Management**: Zustand
 - **Type Safety**: TypeScript
 - **UI Components**: 
+  - React Native Gesture Handler (Swipeable actions)
   - React Native Reanimated
   - React Native SVG
   - Expo Vector Icons
@@ -99,6 +100,7 @@ financial-tracker-app/
 ## Features in Detail
 
 ### Transaction Management
+- Swipeable transaction items with edit and delete actions
 - Add, edit, and delete transactions
 - Categorize transactions with custom categories
 - Add detailed notes to transactions

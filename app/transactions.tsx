@@ -3,7 +3,6 @@ import { FontAwesome } from "@expo/vector-icons";
 import { useState, useMemo } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useStore } from "@/store/useStore";
-import * as Haptics from 'expo-haptics';
 import { Transaction } from "@/types/transaction";
 import { AddTransactionModal } from "@/components/AddTransactionModal";
 import { HoldItem } from "react-native-hold-menu";
