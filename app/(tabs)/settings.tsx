@@ -9,6 +9,9 @@ import * as LocalAuthentication from 'expo-local-authentication';
 import { useState, useEffect } from 'react';
 import { CURRENCIES } from '@/types/currency';
 import { themes } from '@/types/theme';
+import { mockTransactions, mockCategories } from "@/data/mockTransactions";
+
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 export default function Settings() {
   const { 
@@ -26,6 +29,8 @@ export default function Settings() {
     toggleNotifications,
     isBiometricEnabled,
     toggleBiometric,
+    addTransaction,
+    addCategory,
   } = useStore();
 
   const [isCompatible, setIsCompatible] = useState(false);
@@ -187,13 +192,82 @@ export default function Settings() {
     );
   };
 
+  const TestDataSection = () => {
+    if (!isDevelopment) return null;
+
+    const handleAddTestData = () => {
+      Alert.alert(
+        "Add Test Data",
+        "This will add 100 sample transactions to your data. Continue?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel"
+          },
+          {
+            text: "Add Data",
+            onPress: () => {
+              // Add mock transactions to store
+              mockTransactions.forEach(transaction => {
+                addTransaction(transaction);
+              });
+              
+              // Add mock categories if they don't exist
+              mockCategories.forEach(category => {
+                if (!categories.find(c => c.name === category.name)) {
+                  addCategory(category);
+                }
+              });
+
+              Alert.alert("Success", "Test data has been added successfully!");
+            }
+          }
+        ]
+      );
+    };
+
+    return (
+      <View className="mt-6">
+        <Text style={{ color: themeColors.text.primary }} className="mb-2 text-lg font-semibold">
+          Development
+        </Text>
+        <TouchableOpacity
+          style={{ backgroundColor: themeColors.card }}
+          className="flex-row justify-between items-center p-4 rounded-lg"
+          onPress={handleAddTestData}
+        >
+          <View className="flex-row items-center">
+            <View style={{ backgroundColor: theme === 'dark' ? '#3b82f620' : '#dbeafe' }}
+              className="justify-center items-center mr-3 w-10 h-10 rounded-full">
+              <FontAwesome 
+                name="database" 
+                size={20} 
+                color={theme === 'dark' ? '#60a5fa' : '#2563eb'} 
+              />
+            </View>
+            <View>
+              <Text style={{ color: themeColors.text.primary }} className="text-base font-medium">
+                Add Test Data
+              </Text>
+              <Text style={{ color: themeColors.text.secondary }} className="text-sm">
+                Add sample transactions
+              </Text>
+            </View>
+          </View>
+          <FontAwesome 
+            name="chevron-right" 
+            size={16} 
+            color={themeColors.text.secondary} 
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={{ backgroundColor: themeColors.background }} className="flex-1">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="p-4">
-          <Text style={{ color: themeColors.text.primary }} className="mb-4 text-xl font-bold">
-            Settings
-          </Text>
 
           {/* Preferences Section */}
           <View style={{ backgroundColor: themeColors.card }} className="mb-6 rounded-lg shadow-sm">
@@ -422,6 +496,8 @@ export default function Settings() {
               </Text>
             </TouchableOpacity>
           </View>
+
+          <TestDataSection />
         </View>
       </ScrollView>
 

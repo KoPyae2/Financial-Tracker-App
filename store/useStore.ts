@@ -58,6 +58,9 @@ interface StoreState {
   toggleBiometric: () => Promise<void>;
 
   formatAmount: (amount: number) => string;
+
+  transactionsByCategory: Record<string, Transaction[]>;
+  transactionsByDate: Record<string, Transaction[]>;
 }
 
 export const useStore = create<StoreState>()(
@@ -69,6 +72,8 @@ export const useStore = create<StoreState>()(
       balance: { total: 0, isInitialized: false },
       loading: false,
       showBalance: true,
+      transactionsByCategory: {},
+      transactionsByDate: {},
 
       // Actions
       setLoading: (loading: boolean) => set({ loading }),
@@ -79,13 +84,16 @@ export const useStore = create<StoreState>()(
           id: Date.now().toString(),
         };
 
-        set((state) => {
+        set(state => {
+          // Update indexes
+          const categoryTransactions = state.transactionsByCategory[transaction.categoryId] || [];
+          const dateKey = new Date(transaction.date).toISOString().split('T')[0];
+          const dateTransactions = state.transactionsByDate[dateKey] || [];
+
           // Update balance
           const newBalance = {
             ...state.balance,
-            total:
-              state.balance.total +
-              (transaction.type === 'income' ? transaction.amount : -transaction.amount),
+            total: state.balance.total + (transaction.type === 'income' ? transaction.amount : -transaction.amount),
           };
 
           // Update category amounts
@@ -102,6 +110,14 @@ export const useStore = create<StoreState>()(
 
           return {
             transactions: [...state.transactions, newTransaction],
+            transactionsByCategory: {
+              ...state.transactionsByCategory,
+              [transaction.categoryId]: [...categoryTransactions, newTransaction]
+            },
+            transactionsByDate: {
+              ...state.transactionsByDate,
+              [dateKey]: [...dateTransactions, newTransaction]
+            },
             balance: newBalance,
             categories: updatedCategories,
           };
