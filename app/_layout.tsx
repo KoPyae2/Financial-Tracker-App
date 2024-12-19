@@ -5,13 +5,20 @@ import GetStartedPage from '@/components/GetStartedPage';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { HoldMenuProvider } from 'react-native-hold-menu';
 import { themes } from '@/types/theme';
+import { useState } from 'react';
+import SecurityScreen from '@/components/SecurityScreen';
 
 export default function Layout() {
   const { balance,theme } = useStore();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Show GetStartedPage if balance is not initialized
   if (!balance.isInitialized) {
     return <GetStartedPage />;
+  }
+
+  if (!isAuthenticated) {
+    return <SecurityScreen onAuthenticate={setIsAuthenticated} />;
   }
 
   return (
